@@ -12,12 +12,20 @@ class ParksController < ApplicationController
 
   def create
     @park = Park.create(park_params)
-    json_response(@park)
+    if @park.save
+      render json: @park, status: :created, location: @park
+    else
+      render json: @park.errors, status: :unprocessable_entity
+    end
   end
 
   def update
     @park = Park.find(params[:id])
-    @park.update(park_params)
+    if @park.update(park_params)
+      render json: @park
+    else
+      render json: @park.errors, status: :unprocessable_entity
+    end
   end
 
   def destroy
